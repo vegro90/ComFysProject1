@@ -39,6 +39,11 @@ void generalSolver(int n, double* v) {              // Construct solver with for
     for (int i=n-1; i >= 1; i--) {                  // Backward substitution
         v[i] = ( bTilde[i]-(c[i]*v[i+1]) ) / (b[i]);
     }
+
+    delete [] a;
+    delete [] b;
+    delete [] c;
+    delete [] bTilde;
 }
 
 int main() {
@@ -77,6 +82,10 @@ int main() {
         outputFile << setw(15) << setprecision(10) << u[i];
         outputFile << setw(15) << setprecision(10) << v[i] << endl;
     }
+
     outputFile.close();
+    delete [] x;
+    delete [] v;
+    delete [] u;
     return 0;
 }
