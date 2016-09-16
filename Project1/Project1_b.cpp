@@ -106,6 +106,7 @@ int main() {
         u[i] = 0;
         v[i] = 0;
         w[i] = 0;
+        error[i] = 0;
     }
 
     for (int i=0; i < n+1; i++) {                               // Filling up vector u from sourceSolution
@@ -118,17 +119,17 @@ int main() {
 
     calculateRelativeError(n,u,v,error);                        // Calculate relative errover between vector u and v for n elements
 
-    for (int i=1; i < n; i++) {
+    cout << "v[n]" << "\t\t" << "w[n]" << "\t\t" << "u[n]"<< endl;
+
+    for (int i=0; i<n+2; i++ ) {                                // Printing values of v and u
+        cout << v[i] << "\t\t" << w[i] << "\t\t" << u[i] << endl;
+    }
+
+    for (int i=1; i < n; i++) {                                 // Printing relative error
         cout <<"error:  " <<  error[i] <<"  v[x]:  " <<  v[i] << endl;
     }
 
-    //cout << "v[n]" << "\t\t" << "w[n]" << "\t\t" << "u[n]"<< endl;
-
-/*    for (int i=0; i<n+2; i++ ) {                                // Printing values of v and u
-        cout << v[i] << "\t\t" << w[i] << "\t\t" << u[i] << endl;
-    } */
-
-/*    outputFile.open("n=10.txt");
+    outputFile.open("n=10.txt");
     outputFile << setiosflags(ios::showpoint | ios::uppercase);
     outputFile << "\t" << "x" << "\t\t" << "u(x)" << "\t\t" << "v(x)" << "\t\t" << "w(x)" << endl;
     for (int i=1;i<=n;i++) {
@@ -136,12 +137,13 @@ int main() {
         outputFile << setw(15) << setprecision(10) << u[i];
         outputFile << setw(15) << setprecision(10) << v[i];
         outputFile << setw(15) << setprecision(10) << w[i] << endl;
-    } */
+    }
 
     outputFile.close();
     delete [] x;
     delete [] u;
     delete [] v;
     delete [] w;
+    delete [] error;
     return 0;
 }
