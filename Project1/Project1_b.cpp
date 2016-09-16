@@ -81,13 +81,21 @@ void gaussianEliminationTriDiagonalSolver(int n, double* w) {   // Construct sol
     delete [] f;
 }
 
+void calculateRelativeError(int n, double* u, double* v, double* error) {
+
+    for (int i=1; i<=n; i++) {
+        error[i] = log10( fabs( (v[i]-u[i]) / u[i] ) );
+    }
+}
+
 int main() {
-    int n = 10;                                                 // Construct n for matrix size (n x n)
+    int n = 1000;                                                 // Construct n for matrix size (n x n)
     double *x = new double[n+2];                                // Construct x-array
     double h = 1.0/(n+1.0);                                     // Construct steplength, h
     double *u = new double[n+2];                                // Defining vector u
     double *v = new double[n+2];                                // Defining vector v
     double *w = new double[n+2];                                // Defining vector w
+    double *error = new double[n+2];
 
 
     for (int i=0; i<=n+1; i++) {                                // Filling up x-array
@@ -100,20 +108,27 @@ int main() {
         w[i] = 0;
     }
 
-    gaussianEliminationGeneralSolver(n,v);                      // Call forward- and backward substitution for vector v with n elements
-    gaussianEliminationTriDiagonalSolver(n,w);                  // Call backward substitution for vector w with n elements
-
     for (int i=0; i < n+1; i++) {                               // Filling up vector u from sourceSolution
         u[i] = sourceSolution(x[i]);
     }
 
-    cout << "v[n]" << "\t\t" << "w[n]" << "\t\t" << "u[n]"<< endl;
+    gaussianEliminationGeneralSolver(n,v);                      // Call forward- and backward substitution for vector v with n elements
 
-    for (int i=0; i<n+2; i++ ) {                                // Printing values of v and u
-        cout << v[i] << "\t\t" << w[i] << "\t\t" << u[i] << endl;
+    gaussianEliminationTriDiagonalSolver(n,w);                  // Call backward substitution for vector w with n elements
+
+    calculateRelativeError(n,u,v,error);                        // Calculate relative errover between vector u and v for n elements
+
+    for (int i=1; i < n; i++) {
+        cout <<"error:  " <<  error[i] <<"  v[x]:  " <<  v[i] << endl;
     }
 
-    outputFile.open("n=10.txt");
+    //cout << "v[n]" << "\t\t" << "w[n]" << "\t\t" << "u[n]"<< endl;
+
+/*    for (int i=0; i<n+2; i++ ) {                                // Printing values of v and u
+        cout << v[i] << "\t\t" << w[i] << "\t\t" << u[i] << endl;
+    } */
+
+/*    outputFile.open("n=10.txt");
     outputFile << setiosflags(ios::showpoint | ios::uppercase);
     outputFile << "\t" << "x" << "\t\t" << "u(x)" << "\t\t" << "v(x)" << "\t\t" << "w(x)" << endl;
     for (int i=1;i<=n;i++) {
@@ -121,7 +136,7 @@ int main() {
         outputFile << setw(15) << setprecision(10) << u[i];
         outputFile << setw(15) << setprecision(10) << v[i];
         outputFile << setw(15) << setprecision(10) << w[i] << endl;
-    }
+    } */
 
     outputFile.close();
     delete [] x;
