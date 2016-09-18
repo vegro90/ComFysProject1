@@ -13,7 +13,7 @@ def sourceFunction(x):
     return 100*exp(-10*x);
 def secondDerivate(x):
     return 1.0 - (1 - exp(-10)) * x - exp(-10 * x);
-
+"""
 x = []
 u = []
 v = []
@@ -27,19 +27,29 @@ with open("Result_n=10^1.txt") as inf:
             x.append(parts[0])
             u.append(parts[1])
             v.append(parts[2])
+"""
+#my_path = os.getcwd()
 
+for i in range(1,3):
+    fileName = "Result_n=10^" + str(i) + ".txt" 
+    data = np.loadtxt(fileName, skiprows = 1)
+    x = data[:,0]
+    u = data[:,1]
+    v = data[:,2]
+    w = data[:,3]
+    error = data[:,4]
 
+    fig = plt.figure()
+    ax = fig.add_subplot(1,1,1)
 
-fig = plt.figure()
-ax = fig.add_subplot(1,1,1)
-
-ax.plot(x,u,'b-', label = r'Analytical solution, $u(x)$ ')
-ax.plot(x,v,'r-', marker = '1' , label = r'Numerical solution, $v(x)$ ')
-xlabel(r'$x$', size=20, labelpad=5)
-ylabel(r'$f(x)$', size=20, labelpad=5)
-title(r'Aproximation for $n=10$')
-ax.grid()
-ax.legend(loc='smart')
-#fileNameNoExtention = removeFileExtension(fileName)
-#fig.savefig(fileNameNoExtention, bbox_inches='tight', format="png")
-show()
+    ax.plot(x,u,'b-', label = r'Analytical solution, $u(x)$ ')
+    ax.plot(x,v,'r-', marker = '1' , label = r'Numerical solution, $v(x)$ ')
+    xlabel(r'$x$', size=20, labelpad=5)
+    ylabel(r'$f(x)$', size=20, labelpad=5)
+    title(r'Aproximation for $n=10  $')
+    ax.grid()
+    ax.legend(loc='smart')
+    fileNameNoExtention = removeFileExtension(fileName)
+    fig.savefig(fileNameNoExtention + ".png", bbox_inches='tight', format="png")
+    #fig.savefig('/Images/eps/' + fileNameNoExtention + ".eps", bbox_inches='tight', format="eps")
+#show()
