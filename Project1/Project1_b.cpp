@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <cstdlib>
 
+
 using namespace std;
 ofstream outputFile;
 
@@ -89,61 +90,73 @@ void calculateRelativeError(int n, double* u, double* v, double* error) {
 }
 
 int main() {
-    int n = 1000;                                                 // Construct n for matrix size (n x n)
-    double *x = new double[n+2];                                // Construct x-array
-    double h = 1.0/(n+1.0);                                     // Construct steplength, h
-    double *u = new double[n+2];                                // Defining vector u
-    double *v = new double[n+2];                                // Defining vector v
-    double *w = new double[n+2];                                // Defining vector w
-    double *error = new double[n+2];
+    int exponent = 5;
+    string fileName = "Result_n=10^";
 
+    for (int i = 1; i <= exponent; i++) {
+          int  n = (int) pow(10.0,i);
+          string fileout = fileName;                            // Declare new file name
+          string argument = to_string(i);                       // Convert the power 10^i to a string
+          fileout.append(argument + ".txt");                    // Final filename as filename-i-
 
-    for (int i=0; i<=n+1; i++) {                                // Filling up x-array
-        x[i] = i*h;
+        //int n = 1000;                                             // Construct n for matrix size (n x n)
+        double *x = new double[n+2];                                // Construct x-array
+        double h = 1.0/(n+1.0);                                     // Construct steplength, h
+        double *u = new double[n+2];                                // Defining vector u
+        double *v = new double[n+2];                                // Defining vector v
+        double *w = new double[n+2];                                // Defining vector w
+        double *error = new double[n+2];
+
+        for (int i=0; i<=n+1; i++) {                                // Filling up x-array
+            x[i] = i*h;
+        }
+
+        for(int i = 0; i < n+2; i++) {                              // set array values  0
+            u[i] = 0;
+            v[i] = 0;
+            w[i] = 0;
+            error[i] = 0;
+        }
+
+        for (int i=0; i < n+1; i++) {                               // Filling up vector u from sourceSolution
+            u[i] = sourceSolution(x[i]);
+        }
+
+        gaussianEliminationGeneralSolver(n,v);                      // Call forward- and backward substitution for vector v with n elements
+
+        gaussianEliminationTriDiagonalSolver(n,w);                  // Call backward substitution for vector w with n elements
+
+        calculateRelativeError(n,u,v,error);                        // Calculate relative errover between vector u and v for n elements
+
+//        cout << "v[n]" << "\t\t" << "w[n]" << "\t\t" << "u[n]"<< "\t\t" << "error[u,v]" << endl;
+
+/*        for (int i=0; i<n+2; i++ ) {                                // Printing values of v and u
+            cout << v[i] << "\t\t" << w[i] << "\t\t" << u[i] << "\t\t" << error[i] << endl;
+        }
+
+        for (int i=1; i < n; i++) {                                 // Printing relative error
+            cout <<"error:  " <<  error[i] <<"  v[x]:  " <<  v[i] << endl;
+        }
+*/
+
+        outputFile.open(fileout);
+        outputFile << setiosflags(ios::showpoint | ios::uppercase);
+        outputFile << "x" << "\t\t\t" << "u(x)" << "\t\t\t" << "v(x)" << "\t\t\t" << "w(x)" << "\t\t\t" << "error(u,v)" << endl;
+        for (int i=1; i <= n; i++) {
+            outputFile  << setprecision(10) << x[i];
+            outputFile << "\t\t" << setprecision(10) << u[i];
+            outputFile << "\t\t" << setprecision(10) << v[i];
+            outputFile << "\t\t" << setprecision(10) << w[i];
+            outputFile << "\t\t" << setprecision(10) << error[i] << endl;
+        }
+        delete [] x;
+        delete [] u;
+        delete [] v;
+        delete [] w;
+        delete [] error;
+        outputFile.close();
     }
 
-    for(int i = 0; i < n+2; i++) {                              // set array values  0
-        u[i] = 0;
-        v[i] = 0;
-        w[i] = 0;
-        error[i] = 0;
-    }
 
-    for (int i=0; i < n+1; i++) {                               // Filling up vector u from sourceSolution
-        u[i] = sourceSolution(x[i]);
-    }
-
-    gaussianEliminationGeneralSolver(n,v);                      // Call forward- and backward substitution for vector v with n elements
-
-    gaussianEliminationTriDiagonalSolver(n,w);                  // Call backward substitution for vector w with n elements
-
-    calculateRelativeError(n,u,v,error);                        // Calculate relative errover between vector u and v for n elements
-
-    cout << "v[n]" << "\t\t" << "w[n]" << "\t\t" << "u[n]"<< endl;
-
-    for (int i=0; i<n+2; i++ ) {                                // Printing values of v and u
-        cout << v[i] << "\t\t" << w[i] << "\t\t" << u[i] << endl;
-    }
-
-    for (int i=1; i < n; i++) {                                 // Printing relative error
-        cout <<"error:  " <<  error[i] <<"  v[x]:  " <<  v[i] << endl;
-    }
-
-    outputFile.open("n=10.txt");
-    outputFile << setiosflags(ios::showpoint | ios::uppercase);
-    outputFile << "\t" << "x" << "\t\t" << "u(x)" << "\t\t" << "v(x)" << "\t\t" << "w(x)" << endl;
-    for (int i=1;i<=n;i++) {
-        outputFile << setw(15) << setprecision(10) << x[i];
-        outputFile << setw(15) << setprecision(10) << u[i];
-        outputFile << setw(15) << setprecision(10) << v[i];
-        outputFile << setw(15) << setprecision(10) << w[i] << endl;
-    }
-
-    outputFile.close();
-    delete [] x;
-    delete [] u;
-    delete [] v;
-    delete [] w;
-    delete [] error;
     return 0;
 }
