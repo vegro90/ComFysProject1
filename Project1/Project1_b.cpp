@@ -90,7 +90,7 @@ void calculateRelativeError(int n, double* u, double* v, double* error) {
 }
 
 int main() {
-    int exponent = 6;
+    int exponent = 7;
     string fileName = "Result_n=10^";
     //clock_t startClockGeneralSolver, stopClockGeneralSolver, startClockTriDiagonalSolver, stopClockTriDiagonalSolver ;
 
@@ -137,10 +137,6 @@ int main() {
         double timeTriDiagonalSolver = ((stopClockTriDiagonalSolver - startClockTriDiagonalSolver) / CLOCKS_PER_SEC);
 
         calculateRelativeError(n,u,v,error);                        // Calculate relative errover between vector u and v for n elements
-
-
-
-
 
 /*        cout << "v[n]" << "\t\t" << "w[n]" << "\t\t" << "u[n]"<< "\t\t" << "error[u,v]" << endl;
 

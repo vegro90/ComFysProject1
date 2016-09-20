@@ -3,7 +3,10 @@ CONFIG += console c++11
 CONFIG -= app_bundle
 CONFIG -= qt
 
-SOURCES += \
-    Project1_b.cpp
+SOURCES += lu_test.cpp
 
+LIBS += \
+    -LC:\Armadillo \
+    -lliblapack \
+    -llibblas
 
